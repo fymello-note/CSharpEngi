@@ -1,0 +1,62 @@
+﻿<h1>Index.cshtml</h1>
+
+<h3>For: </h3>
+<ul>
+    @for (int i = 0; i < 4; i++)
+    {
+        @*come stampare in modo dinamico
+            1. <li>Persona @(i+1)</li>
+
+            2. int num = i + 1;
+               <li>Persona @num</li>
+            3. <ul>
+               @while(j++ < 4){
+                    <li>Persona @(j + 1)</li>
+               }
+               </ul>
+        *@
+        <li>Persona @(i+1)</li>
+    }
+</ul>
+
+@* Esegue in numero di istruzioni C# *@
+<h3>While: </h3>
+@{
+    int j = 0;
+}
+<ul>
+    @while (j++ < 4)
+    {
+        <li>Persona @(j + 1)</li>
+    }
+</ul>
+
+@if (true)
+{
+    <p>true</p>
+}
+else
+{
+    <p>false</p>
+}
+
+@{ 
+    j = 0;
+}
+
+<ul>
+    @switch (j)
+    {
+        case 0:
+            <li>0</li>
+            break;
+
+        case 1:
+            <li>0</li>
+            break;
+
+        default:
+            <li>Default</li>
+            break;
+    }
+</ul>

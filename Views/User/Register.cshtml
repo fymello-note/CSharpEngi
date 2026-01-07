@@ -1,0 +1,28 @@
+﻿@model ProgettoProva.web.Models.User.UserViewModel
+
+<p>@Request.HttpMethod</p>
+
+<form method="post">
+    <div>
+        @Html.LabelFor(m => m.FirstName)
+        @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control"})
+        @Html.ValidationMessageFor(m => m.FirstName, "", new { @class = "text-danger"})
+    </div>
+    <div>
+        @Html.LabelFor(m => m.LastName)
+        @Html.TextBoxFor(m => m.LastName, new { @class = "form-control"})
+        @Html.ValidationMessageFor(m => m.LastName, "", new { @class = "text-danger"})
+    </div>
+    <div>
+        @Html.LabelFor(m => m.UserName)
+        @Html.TextBoxFor(m => m.UserName, new { @class = "form-control"})
+        @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger"})
+    </div>
+    <div>
+        @Html.LabelFor(m => m.Password)
+        @Html.TextBoxFor(m => m.Password, new { @class = "form-control", type = "password"})
+        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger"})
+    </div>
+    <button type="submit">REGISTER</button>
+</form>
+
