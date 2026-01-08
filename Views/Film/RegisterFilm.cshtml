@@ -1,0 +1,34 @@
+﻿@model ProgettoProva.web.Models.Film.FilmViewModel
+
+@if (!ViewData.ModelState.IsValid) {
+    @Html.ValidationSummary(false, "", new { @class = "alert alert-danger" })
+}
+
+@Html.Partial("FormFilm_Form")
+
+@section scripts {
+    <script>
+        /* js version
+        document.getElementById('btnAddCast').addEventListener('click', function (e) {
+
+        });*/
+
+        // jQuery version (more compact)
+        $('#btnAddCast').on('click', function (e) {
+            console.debug('#btnAddCast::click');
+
+            //  padre    figlio
+            const numInputs = $('#castList input').length; //selettore composto
+
+            console.debug('numInputs: ' + numInputs);
+            const html = '<input class="form-control mb-2" id="Cast_' + numInputs + '_" name="Cast[' + numInputs + ']" type = "text"/> ';
+
+            $('#castList').append(html);
+        });
+
+        $('#btnRemoveCast').on('click', function (e) {
+            $('#castList input').last().remove();
+        });
+    </script>
+}
+
