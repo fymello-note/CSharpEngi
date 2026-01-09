@@ -8,7 +8,7 @@ namespace ProgettoProva.web.Extensions.Database
 {
     public static class SqlCommandExtensions
     {
-        public static void AddParameterWithValue(this SqlCommand command, string parameterName, object value)
+        public static void AddWithValueOrDBNull(this SqlCommand command, string parameterName, object value)
         {
             if(value == null)
             {
