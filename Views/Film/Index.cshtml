@@ -2,13 +2,16 @@
 
 @Html.ActionLink("registra film", "RegisterFilm", "Film", new { area = "" }, new { @class = "btn btn-primary mb-3" })
 
+<form method="get">
 <table class="table table-bordered">
     <thead>
         <tr>
+            <th></th>
             <th>Titolo</th>
             <th>Data di uscita</th>
             <th>Genere</th>
             <th>Regista</th>
+            <th>Producer</th>
             <th>Cast</th>
         </tr>
     </thead>
@@ -16,10 +19,12 @@
         @foreach (var film in Model)
         {
             <tr>
+                <td>@Html.ActionLink("Modifica", "EditFilm", "Film", new {area = "", id = film.FilmId}, new { @class = "btn btn-secondary btn-sm"})</td>
                 <td>@film.Title</td>
                 <td>@film.ReleaseDate.ToString("dd/MM/yyyy")</td>
                 <td>@film.Genre</td>
                 <td>@film.Director</td>
+                <td>@film.Producer</td>
                 <td>
                     <ul>
                         @foreach (var actor in film.Cast)
@@ -32,4 +37,4 @@
         }
     </tbody>
 </table>
-
+</form> 

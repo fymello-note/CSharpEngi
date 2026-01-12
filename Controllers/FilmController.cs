@@ -26,12 +26,13 @@ namespace ProgettoProva.web.Controllers
         [HttpGet]
         public ActionResult RegisterFilm()
         {
+            ViewData["GenreListItems"] = GetGenreListItem();
             var film = new FilmViewModel()
             {
-                //Title = "Mad Max",
-                //ReleaseDate = new DateTime(2015, 01, 01),
-                //Director = "George Miller",
-                //Cast = new List<string>() { "Tom Hardy" }
+                Title = "Mad Max",
+                ReleaseDate = new DateTime(2015, 01, 01),
+                Director = "George Miller",
+                Cast = new List<string>() { "Tom Hardy" }
             };
             return View(film);
         }
@@ -45,6 +46,7 @@ namespace ProgettoProva.web.Controllers
 
                 return Request.Form["AddAnother"] == "1" ? RedirectToAction("RegisterFilm") : RedirectToAction("Index");
             }
+            ViewData["GenreListItems"] = GetGenreListItem();
             return View(film);
         }
 
@@ -57,7 +59,7 @@ namespace ProgettoProva.web.Controllers
 
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "INSERT INTO film (Title, ReleaseDate, Director, Producer) VALUES (@Title, @ReleaseDate, @Director, @Producer);";
+                    command.CommandText = "INSERT INTO film (Title, ReleaseDate, Director, Producer, GenreId) VALUES (@Title, @ReleaseDate, @Director, @Producer, @GenreId);";
 
                     // command.Parameters.AddWithValue("Title", film.Title);
                     // command.Parameters.AddWithValue("ReleaseDate", film.ReleaseDate);
@@ -84,7 +86,7 @@ namespace ProgettoProva.web.Controllers
                         ReleaseDate = film.ReleaseDate,
                     };
 
-                    command.Parameters.BindParameters(film, new string[] { "Cast", nameof(film.Genre)});
+                    command.Parameters.BindParameters(film, new string[] { nameof(film.FilmId), "Cast", nameof(film.Genre)});
 
                     command.ExecuteNonQuery();
                 }
@@ -100,29 +102,33 @@ namespace ProgettoProva.web.Controllers
 
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT Title, ReleaseDate, Director, Producer FROM Film;";
+                    command.CommandText = @"SELECT film.FilmId, film.Title, film.ReleaseDate, film.Director, film.Producer, genre.[Name] as Genre 
+                                            From dbo.Film as film inner join dbo.Genre as genre 
+                                            on Film.GenreId = Genre.GenreId;";
 
                     using(SqlDataReader reader = command.ExecuteReader())
                     {
                         if (reader.Read())
                         {
+                            int filmIdPos = reader.GetOrdinal("FilmId");
                             int titlePos = reader.GetOrdinal("Title");
                             int releaseDatePos = reader.GetOrdinal("ReleaseDate");
                             int directorPos = reader.GetOrdinal("Director");
                             int producerPos = reader.GetOrdinal("Producer");
+                            int genrePos = reader.GetOrdinal("Genre");
                             
                             do
                             {
                                 films.Add(
                                     new FilmViewModel
                                     {
-                                        //FilmId = reader.GetInt32(filmId)
+                                        FilmId = reader.GetInt32(filmIdPos),
                                         Title = reader.GetString(titlePos),
                                         ReleaseDate = reader.GetDateTime(releaseDatePos),
                                         Director = reader.GetString(directorPos),
                                         Producer = !reader.IsDBNull(producerPos) ? reader.GetString(producerPos) : null,
-                                        Genre = "Azione",
-                                        Cast = new List<string>() { "mike" }
+                                        Genre = reader.GetString(genrePos),
+                                        /*Cast = new List<string>() { "mike" }*/
                                     });
                             } while (reader.Read());
                         }
@@ -131,7 +137,132 @@ namespace ProgettoProva.web.Controllers
             }
 
             return films;
+        }
 
+        [HttpGet]
+        public ActionResult EditFilm(int id)
+        {
+            ViewData["GenreListItems"] = GetGenreListItem();
+            return View(GetFilmById(id));
+        }
+
+        [HttpPost]
+        public ActionResult EditFilm(int id, FilmViewModel film)
+        {
+            if (ModelState.IsValid)
+            {
+                //string idString = Request.Form["FilmToMod"];
+
+                //film.FilmId = int.Parse(idString);
+
+                film.FilmId = id;
+                
+                UpdateFilm(film);
+
+                return RedirectToAction("Index");
+            }
+
+            ViewData["GenreListItems"] = GetGenreListItem();
+            return View(film);
+        }
+
+        public void UpdateFilm(FilmViewModel film)
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "UPDATE Film SET Title = @Title, ReleaseDate = @ReleaseDate, Director = @Director, Producer = @Producer WHERE FilmId = @FilmId;";
+
+                    command.Parameters.BindParameters(film, new string[] { "Cast", nameof(film.Genre)});
+
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public FilmViewModel GetFilmById(int id)
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "SELECT FilmId, Title, ReleaseDate, Director, Producer, GenreId FROM Film WHERE FilmId = @FilmId";
+
+                    command.Parameters.AddWithValue("FilmId", id);
+
+                    using(SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+
+                            int titlePos = reader.GetOrdinal("Title");
+                            int releaseDatePos = reader.GetOrdinal("ReleaseDate");
+                            int directorPos = reader.GetOrdinal("Director");
+                            int producerPos = reader.GetOrdinal("Producer");
+                            int filmIdPos = reader.GetOrdinal("FilmId");
+                            int genreIdPos = reader.GetOrdinal("GenreId");
+
+                            FilmViewModel filmToReturn = new FilmViewModel()
+                            {
+                                Title = reader.GetString(titlePos),
+                                Director = reader.GetString(directorPos),
+                                Producer = reader.GetString(producerPos) ?? null,
+                                FilmId = reader.GetInt32(filmIdPos),
+                                ReleaseDate = reader.GetDateTime(releaseDatePos),
+                                Cast = new List<string>(),
+                                GenreId = reader.GetInt16(genreIdPos)
+                            };
+
+                            return filmToReturn;
+                        }
+
+                        throw new Exception("Film by FilmId not found");
+                    }
+                }
+            }
+        }
+
+        private List<SelectListItem> GetGenreListItem()
+        {
+            List<SelectListItem> items = new List<SelectListItem>() { };
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "SELECT GenreId, [Name] FROM dbo.Genre";
+
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+
+                            int genreIdPos = reader.GetOrdinal("GenreId");
+                            int namePos = reader.GetOrdinal("Name");
+
+                            do
+                            {
+                                SelectListItem item = new SelectListItem()
+                                {
+                                    Value = reader.GetInt16(genreIdPos).ToString(),
+                                    Text = reader.GetString(namePos)
+
+                                };
+
+                                items.Add(item);
+                            } while (reader.Read());
+                        }
+                    }
+
+                }
+            }
+            return items;
         }
     }
 }

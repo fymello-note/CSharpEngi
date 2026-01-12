@@ -310,6 +310,7 @@
     <Content Include="Views\Film\Index.cshtml" />
     <Content Include="Views\Film\RegisterFilm.cshtml" />
     <Content Include="Views\Film\FormFilm_Form.cshtml" />
+    <Content Include="Views\Film\EditFilm.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

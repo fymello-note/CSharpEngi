@@ -1,22 +1,23 @@
 ﻿@model ProgettoProva.web.Models.Film.FilmViewModel
 
-@{ 
-    List<SelectListItem> genreList = new List<SelectListItem>()
-    {
-        new SelectListItem() {Value = "AZIONE", Text = "Azione"},
-        new SelectListItem() {Value = "AVVENTURA", Text = "Avventura"},
-        new SelectListItem() {Value = "ROMANTICO", Text = "Romantico"}
-    };
+@{
+    List<SelectListItem> genreList = (List<SelectListItem>)ViewData["GenreListItems"];
+    //List<SelectListItem> genreList = new List<SelectListItem>()
+    //{
+    //    new SelectListItem() {Value = "AZIONE", Text = "Azione"},
+    //    new SelectListItem() {Value = "AVVENTURA", Text = "Avventura"},
+    //    new SelectListItem() {Value = "ROMANTICO", Text = "Romantico"}
+    //};
 }
-<form method="post">
+@*<form method="post">*@
     <div class="mb-3">
         @Html.LabelFor(m => m.Title, "Titolo")
-        @Html.TextBoxFor(m => m.Title, new { @class = "form-control" })
+        @Html.TextBoxFor(m => m.Title,  new { @class = "form-control" })
         @Html.ValidationMessageFor(m => m.Title, "", new { @class = "text-danger" })
     </div>
     <div class="mb-3">
         @Html.LabelFor(m => m.ReleaseDate, "Data di uscita")
-        @Html.TextBoxFor(m => m.ReleaseDate, new { @class = "form-control", type = "date"})
+        @Html.TextBoxFor(m => m.ReleaseDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date"})
         @Html.ValidationMessageFor(m => m.ReleaseDate, "", new { @class = "text-danger" })
     </div>
     <div class="mb-3">
@@ -30,9 +31,9 @@
         @Html.ValidationMessageFor(m => m.Producer, "", new { @class = "text-danger" })
     </div>
     <div class="mb-3">
-        @Html.LabelFor(m => m.Genre, "Genere")
-        @Html.DropDownListFor(m => m.Genre, genreList, "-- Seleziona --", new { @class = "form-select text-center"})
-        @Html.ValidationMessageFor(m => m.Genre, "", new { @class = "text-danger" })
+        @Html.LabelFor(m => m.GenreId, "Genere")
+        @Html.DropDownListFor(m => m.GenreId, genreList, "-- Seleziona --", new { @class = "form-select text-center"})
+        @Html.ValidationMessageFor(m => m.GenreId, "", new { @class = "text-danger" })
     </div>
 
     <div class="mb-3">
@@ -47,6 +48,6 @@
         @Html.ValidationMessageFor(m => m.Cast, "", new { @class = "text-danger"})
     </div>
 
-    <button type="submit" class="btn btn-primary">Crea</button>
+    @*<button type="submit" class="btn btn-primary">Crea</button>
     <button type="submit" class="btn btn-primary" name="AddAnother" value="1">Crea e aggiungi un altro</button>
-</form>
+</form>*@

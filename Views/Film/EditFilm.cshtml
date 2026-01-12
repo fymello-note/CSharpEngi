@@ -1,14 +1,21 @@
 ﻿@model ProgettoProva.web.Models.Film.FilmViewModel
 
-@if (!ViewData.ModelState.IsValid)
-{
+@if (!ViewData.ModelState.IsValid) {
     @Html.ValidationSummary(false, "", new { @class = "alert alert-danger" })
 }
 
+@{ 
+    List<SelectListItem> genreList = new List<SelectListItem>()
+    {
+        new SelectListItem() {Value = "AZIONE", Text = "Azione"},
+        new SelectListItem() {Value = "AVVENTURA", Text = "Avventura"},
+        new SelectListItem() {Value = "ROMANTICO", Text = "Romantico"}
+    };
+}
 <form method="post">
     @Html.Partial("FormFilm_Form")
-    <button type="submit" class="btn btn-primary">Crea</button>
-    <button type="submit" class="btn btn-primary" name="AddAnother" value="1">Crea e aggiungi un altro</button>
+    <button type="submit" class="btn btn-primary">Modifica</button>
+    @*<button type="submit" class="btn btn-primary" name="FilmId" value="@Model.FilmId">Modifica</button>*@
 </form>
 
 @section scripts {
@@ -36,4 +43,3 @@
         });
     </script>
 }
-
