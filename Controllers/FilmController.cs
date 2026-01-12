@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.UI.WebControls.WebParts;
+using ProgettoProva.web.Extensions.Database;
 
 namespace ProgettoProva.web.Controllers
 {
@@ -13,7 +14,8 @@ namespace ProgettoProva.web.Controllers
     {
         private const string connectionString = "Data Source=(localdb)\\mssqllocaldb;Initial Catalog=testDatabase;";
 
-        private static List<FilmViewModel> films = new List<FilmViewModel>();
+        // private static List<FilmViewModel> films = new List<FilmViewModel>();
+
         // GET: Film
         public ActionResult Index()
         {
@@ -56,10 +58,20 @@ namespace ProgettoProva.web.Controllers
                 {
                     command.CommandText = "INSERT INTO film (Title, ReleaseDate, Director, Producer) VALUES (@Title, @ReleaseDate, @Director, @Producer);";
 
-                    command.Parameters.AddWithValue("Title", film.Title);
-                    command.Parameters.AddWithValue("ReleaseDate", film.ReleaseDate);
-                    command.Parameters.AddWithValue("Director", film.Director);
-                    command.Parameters.AddWithValue("Producer", film.Producer == null ? DBNull.Value : (object) film.Producer);
+                    // command.Parameters.AddWithValue("Title", film.Title);
+                    // command.Parameters.AddWithValue("ReleaseDate", film.ReleaseDate);
+                    // command.Parameters.AddWithValue("Director", film.Director);
+                    //command.Parameters.AddWithValue("Producer", film.Producer == null ? DBNull.Value : (object)film.Producer);
+                    // command.Parameters.AddWithValueOrDBNull("Producer", film.Producer);
+
+                    BindParameters(command.Parameters, new Dictionary<string, object>()
+                    {
+                        //{ "Director", film.Director }, <- altro modo per scrivere
+                        ["Title"] = film.Title,
+                        ["ReleaseDate"] = film.ReleaseDate,
+                        ["Director"] = film.Director,
+                        ["Producer"] = film.Producer
+                    });
 
                     command.ExecuteNonQuery();
                 }
