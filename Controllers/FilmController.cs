@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.UI.WebControls.WebParts;
 using ProgettoProva.web.Extensions.Database;
+using System.Reflection;
 
 namespace ProgettoProva.web.Controllers
 {
@@ -64,7 +65,8 @@ namespace ProgettoProva.web.Controllers
                     //command.Parameters.AddWithValue("Producer", film.Producer == null ? DBNull.Value : (object)film.Producer);
                     // command.Parameters.AddWithValueOrDBNull("Producer", film.Producer);
 
-                    BindParameters(command.Parameters, new Dictionary<string, object>()
+                    /*
+                    command.Parameters.BindParameters(new Dictionary<string, object>()
                     {
                         //{ "Director", film.Director }, <- altro modo per scrivere
                         ["Title"] = film.Title,
@@ -72,6 +74,17 @@ namespace ProgettoProva.web.Controllers
                         ["Director"] = film.Director,
                         ["Producer"] = film.Producer
                     });
+                    */
+
+                    var record = new FilmRecord()
+                    {
+                        Title = film.Title,
+                        Director = film.Director,
+                        Producer = film.Producer,
+                        ReleaseDate = film.ReleaseDate,
+                    };
+
+                    command.Parameters.BindParameters(film, new string[] { "Cast", nameof(film.Genre)});
 
                     command.ExecuteNonQuery();
                 }
