@@ -93,9 +93,9 @@ namespace ProgettoProva.web.Controllers
             }
         }
 
-        private List<FilmViewModel> GetFilms()
+        private List<FilmDataGridItemViewModel> GetFilms()
         {
-            List<FilmViewModel> films = new List<FilmViewModel>();
+            List<FilmDataGridItemViewModel> films = new List<FilmDataGridItemViewModel>();
             using(SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
@@ -120,7 +120,7 @@ namespace ProgettoProva.web.Controllers
                             do
                             {
                                 films.Add(
-                                    new FilmViewModel
+                                    new FilmDataGridItemViewModel
                                     {
                                         FilmId = reader.GetInt32(filmIdPos),
                                         Title = reader.GetString(titlePos),
