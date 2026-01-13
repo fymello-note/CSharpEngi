@@ -8,16 +8,12 @@ namespace ProgettoProva.web.Models.Film
 {
     public class FilmViewModel
     {
-        public int FilmId { get; set; }
 
         [Required(ErrorMessage = "Campo obbligatorio")]
         public string Title { get; set; }
 
         [Required(ErrorMessage = "Campo obbligatorio")]
         public DateTime ReleaseDate { get; set; }
-
-        //[Required(ErrorMessage = "Campo obbligatorio")]
-        public string Genre { get; set; }
 
         [Required(ErrorMessage = "Campo obbligatorio")]
         public short GenreId { get; set; }
